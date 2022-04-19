@@ -24,6 +24,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - run: ./.github/setup-buildx.sh
 
       - run: docker build . --target build-output --output build
       - run: docker build .
