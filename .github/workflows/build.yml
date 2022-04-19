@@ -1,0 +1,36 @@
+name: WireMock Studio Build & Publish
+
+on:
+  push:
+    branches-ignore:
+      - 'abandoned-*'
+  schedule:
+    # Daily at 2AM
+    # * is a special character in YAML so you have to quote this string
+    - cron: '0 2 * * *'
+
+env:
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+  BUILDKIT_PROGRESS: plain
+  PROGRESS_NO_TRUNC: 1
+  cache-name: docker-cache-1
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: docker build . --target build-output --output build
+      - run: docker build .
+
+      - uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          check_name: Unit Test Results
+          files: |
+            build/**/test-results/**/*.xml
