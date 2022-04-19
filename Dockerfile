@@ -37,17 +37,16 @@ ARG gradle_cache_dir=/home/$username/.gradle/caches
 
 # Download gradle in a separate step to benefit from layer caching
 COPY --chown=$username gradle/wrapper gradle/wrapper
-COPY --chown=$username gradlew gradlew
-COPY --chown=$username gradle.properties gradle.properties
+COPY --chown=$username gradlew gradle.properties ./
 RUN ./gradlew --version
 
 # Do all the downloading in one step...
-COPY --chown=$username --from=gradle-files /gradle-files ./
+COPY --chown=$username --from=gradle-files /gradle-files .
 RUN --mount=type=cache,target=$gradle_cache_dir,gid=$gid,uid=$uid \
     ./gradlew --no-watch-fs --stacktrace downloadDependencies
 
-COPY --chown=$username . .
 # So the actual build can run without network access. Proves no tests rely on external services.
+COPY --chown=$username . .
 RUN --mount=type=cache,target=$gradle_cache_dir,gid=$gid,uid=$uid \
     --network=none \
     ./gradlew --no-watch-fs --offline build || mkdir -p build
@@ -57,7 +56,7 @@ RUN --mount=type=cache,target=$gradle_cache_dir,gid=$gid,uid=$uid \
 FROM scratch as build-output
 ARG work_dir
 
-COPY --from=builder $work_dir/build ./
+COPY --from=builder $work_dir/build .
 
 
 
