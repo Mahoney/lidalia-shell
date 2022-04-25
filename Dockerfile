@@ -33,7 +33,6 @@ WORKDIR $work_dir
 
 # The single use daemon will be unavoidable in future so don't waste time trying to prevent it
 ENV GRADLE_OPTS='-Dorg.gradle.daemon=false'
-ARG gradle_cache_dir=/home/$username/.gradle/caches
 
 # Download gradle in a separate step to benefit from layer caching
 COPY --chown=$username gradle/wrapper gradle/wrapper
@@ -42,13 +41,11 @@ RUN ./gradlew --version
 
 # Do all the downloading in one step...
 COPY --chown=$username --from=gradle-files /gradle-files .
-RUN --mount=type=cache,target=$gradle_cache_dir,gid=$gid,uid=$uid \
-    ./gradlew --no-watch-fs --stacktrace downloadDependencies
+RUN ./gradlew --no-watch-fs --stacktrace downloadDependencies
 
 # So the actual build can run without network access. Proves no tests rely on external services.
 COPY --chown=$username . .
-RUN --mount=type=cache,target=$gradle_cache_dir,gid=$gid,uid=$uid \
-    --network=none \
+RUN --network=none \
     ./gradlew --no-watch-fs --offline build || mkdir -p build
 
 
@@ -62,6 +59,5 @@ COPY --from=builder $work_dir/build .
 
 FROM builder as checker
 
-RUN --mount=type=cache,target=$gradle_cache_dir,gid=$gid,uid=$uid \
-    --network=none \
+RUN --network=none \
     ./gradlew --no-watch-fs --offline build
