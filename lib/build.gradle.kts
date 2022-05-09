@@ -19,7 +19,7 @@ dependencies {
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   implementation("com.michael-bull.kotlin-result:kotlin-result:1.1.16")
 
-  testImplementation("io.kotest:kotest-runner-junit5:5.2.3")
+  testImplementation("io.kotest:kotest-runner-junit5:5.3.0")
   testImplementation("io.kotest:kotest-assertions-core:5.3.0")
 }
 
