@@ -1,7 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-  id("org.jetbrains.kotlin.jvm") version "1.6.21"
+  id("org.jetbrains.kotlin.jvm") version "1.7.0"
   `java-library`
   id("org.jmailen.kotlinter") version "3.10.0"
 }
