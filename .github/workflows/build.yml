@@ -34,7 +34,7 @@ jobs:
 
       - uses: docker/build-push-action@v2
 
-      - uses: EnricoMi/publish-unit-test-result-action@v1
+      - uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           check_name: Unit Test Results
