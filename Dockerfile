@@ -18,7 +18,7 @@ RUN --mount=type=bind,target=/docker-context \
 
 
 
-FROM eclipse-temurin:17.0.4_8-jdk-focal as builder
+FROM eclipse-temurin:19.0.2_7-jdk-focal as builder
 ARG username
 ARG work_dir
 ARG gid
